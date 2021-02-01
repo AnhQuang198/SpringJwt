@@ -2,13 +2,12 @@ package com.example.authenservice.domain.services;
 
 import com.example.authenservice.app.models.UserDTO;
 import com.example.authenservice.app.response.UserResponse;
-import com.example.authenservice.domain.entities.Role;
 import com.example.authenservice.domain.entities.User;
+import com.example.authenservice.domain.entities.types.Role;
 import com.example.authenservice.domain.exceptions.NotFoundException;
 import com.example.authenservice.domain.models.CustomUserDetails;
 import com.example.authenservice.domain.models.TokenInfo;
 import com.example.authenservice.domain.utils.PasswordGenerator;
-import com.example.authenservice.domain.utils.RoleEnum;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -32,7 +31,7 @@ public class UserService extends BaseService implements UserDetailsService {
     public ResponseEntity<?> add(UserDTO userDTO) {
         User user = User.builder().email(userDTO.getEmail())
                 .password(PasswordGenerator.encrytePassword(userDTO.getPassword()))
-                .enabled(false).role(new Role(RoleEnum.MEMBER.getRoleId())).build();
+                .enabled(false).role(Role.ROLE_MEMBER).build();
         userRepository.save(user);
         sendEmailVerify(userDTO);
         return ResponseEntity.ok("Success");
@@ -105,7 +104,7 @@ public class UserService extends BaseService implements UserDetailsService {
             throw new UsernameNotFoundException("Not found");
         }
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(user.getRole().getName()));
+        authorities.add(new SimpleGrantedAuthority(user.getRole().name()));
         CustomUserDetails customUserDetails = new CustomUserDetails(user, authorities);
         return customUserDetails;
     }
@@ -113,7 +112,7 @@ public class UserService extends BaseService implements UserDetailsService {
     public UserDetails loadUserById(int id) {
         User user = userRepository.findUserById(id);
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(user.getRole().getName()));
+        authorities.add(new SimpleGrantedAuthority(user.getRole().name()));
         return new CustomUserDetails(user, authorities);
     }
 }

@@ -10,39 +10,44 @@ import javax.validation.Valid;
 
 
 @RestController
-@RequestMapping("/v1/api")
+@RequestMapping("/v1/auth")
 public class AuthenController {
 
     @Autowired
     private UserService userService;
 
-    @PostMapping("/authen/register")
+    @PostMapping(path = "register")
     public ResponseEntity<?> register(@RequestBody @Valid UserDTO userDTO) {
         return userService.add(userDTO);
     }
 
-    @PostMapping("/authen/login")
+    @PostMapping(path = "login")
     public ResponseEntity<?> login(@RequestBody @Valid UserDTO userDTO){
         return userService.checkUserAuthen(userDTO);
     }
 
-    @GetMapping("/authen/refresh-token")
+    @GetMapping(path = "refresh-token")
     public ResponseEntity<?> refreshToken(@RequestHeader("refreshToken") String refreshToken){
         return userService.genNewAccessToken(refreshToken);
     }
 
-    @GetMapping("/authen/logout")
+    @GetMapping(path = "logout")
     public ResponseEntity<?> logout(@RequestHeader("refreshToken") String refreshToken){
         return userService.logout(refreshToken);
     }
 
-    @GetMapping("/authen/active-account/{id}")
+    @GetMapping(path = "active-account/{id}")
     public ResponseEntity<?> activeAccount(@PathVariable("id") int id){
         return userService.activeAccount(id);
     }
 
-    @GetMapping("/member/profile/{id}")
+    @GetMapping(path = "/member/profile/{id}")
     public ResponseEntity<?> getProfile(@PathVariable("id") Integer id){
+        return userService.getOneUser(id);
+    }
+
+    @GetMapping(path = "/admin/profile/{id}")
+    public ResponseEntity<?> getProfileAdmin(@PathVariable("id") Integer id){
         return userService.getOneUser(id);
     }
 

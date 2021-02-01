@@ -17,13 +17,15 @@ public class JwtTokenProvider {
     @Value("${jwt.secret.key}")
     private String JWT_SECRET;
 
-    public static final long JWT_TOKEN_VALIDITY = 3600000; //60 minutes
+    @Value("${jwt.secret.time}")
+    private long JWT_TOKEN_VALIDITY; //5 minutes
 
     public String generateToken(CustomUserDetails userDetails) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + JWT_TOKEN_VALIDITY);
         return Jwts.builder()
                 .setHeader(header())
+                .setClaims(claims(userDetails))
                 .setSubject(Long.toString(userDetails.getUser().getId()))
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
@@ -53,6 +55,12 @@ public class JwtTokenProvider {
             log.error("JWT claims string is empty.");
         }
         return false;
+    }
+
+    private Map<String, Object> claims(CustomUserDetails customUserDetails){
+        Map<String, Object> claimsMap = new HashMap<>();
+        claimsMap.put("role", "admin");
+        return claimsMap;
     }
 
     private Map<String, Object> header(){

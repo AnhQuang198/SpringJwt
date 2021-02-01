@@ -1,8 +1,8 @@
 package com.example.authenservice.domain.configs;
 
+import com.example.authenservice.domain.entities.types.Role;
 import com.example.authenservice.domain.jwt.JwtAuthenticationFilter;
 import com.example.authenservice.domain.services.UserService;
-import com.example.authenservice.domain.utils.RoleEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -55,8 +55,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 				.and()
 				.authorizeRequests()
-				.antMatchers("/v1/api/admin/**").hasAnyRole(RoleEnum.ADMIN.getRoleName())
-				.antMatchers("/v1/api/member/**").hasAnyRole(RoleEnum.ADMIN.getRoleName(), RoleEnum.MEMBER.getRoleName())
+				.antMatchers("/v1/api/admin/**").hasAnyRole(Role.ROLE_ADMIN.name())
+				.antMatchers("/v1/api/member/**").hasAnyRole(Role.ROLE_ADMIN.name(), Role.ROLE_MEMBER.name())
 				.antMatchers("/v1/api/authen/**").permitAll()
 				.anyRequest().authenticated();
 

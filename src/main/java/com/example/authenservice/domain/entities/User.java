@@ -1,10 +1,10 @@
 package com.example.authenservice.domain.entities;
 
+import com.example.authenservice.domain.entities.types.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import javax.persistence.*;
 
 @Entity
@@ -27,8 +27,7 @@ public class User {
     @Column(name = "enabled")
     private Boolean enabled;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "role_id")
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role")
     private Role role;
-
 }
